@@ -463,14 +463,12 @@ ARM Macro Assembler    Page 8
   305 0000001C                 END
               00000000 
               00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
-ork --depend=.\objects\startup_stm32f10x_md.d -o.\objects\startup_stm32f10x_md.
-o -IF:\成品资料\8智能浇花系统\6.智能浇花系统-第六版\1-程序源文件\硬件源码\Stm32
-Code\Project\RTE -ID:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32F1x
-x_DFP\2.3.0\Device\Include -ID:\Keil_v5\ARM\CMSIS\Include --predefine="__MICROL
-IB SETA 1" --predefine="__UVISION_VERSION SETA 520" --predefine="STM32F10X_MD S
-ETA 1" --list=.\listings\startup_stm32f10x_md.lst ..\Libraries\CMSIS\startup\ar
-m\startup_stm32f10x_md.s
+Command Line: --debug --xref --diag_suppress=9931,A1950W --cpu=Cortex-M3 --depe
+nd=.\objects\startup_stm32f10x_md.d -o.\objects\startup_stm32f10x_md.o -ID:\Kei
+l\STM32F1xx_DFP\2.4.1\Device\Include --predefine="__EVAL SETA 1" --predefine="_
+_MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefine="STM32F1
+0X_MD SETA 1" --list=.\listings\startup_stm32f10x_md.lst ..\Libraries\CMSIS\sta
+rtup\arm\startup_stm32f10x_md.s
 
 
 
@@ -1177,4 +1175,4 @@ Symbol: __main
       At line 135 in file ..\Libraries\CMSIS\startup\arm\startup_stm32f10x_md.s
 Comment: __main used once
 2 symbols
-405 symbols in table
+406 symbols in table

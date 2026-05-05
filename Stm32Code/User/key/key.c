@@ -91,7 +91,7 @@ void Key4Press(void)
 
 
 
-}
+
 
 /*
 ******按键扫描函数*****************************************
@@ -103,53 +103,20 @@ void Key4Press(void)
 */
 void KeyScan(void)
 {
-    static int keyCount = 0;
-    static int keyState = 0;
-    if (KEY1 == 0 && keyState == 0) //按键按下
+    static u8 key_up = 1; 
+    if (key_up && (KEY1 == 0 || KEY2 == 0 || KEY3 == 0 || KEY4 == 0)) 
     {
-        keyCount++;
-        if (keyCount > 2 && KEY1 == 0 && keyState == 0) //加两次类似延迟10ms，不好解释
-        {
-            /*ToDo:按键按下执行的操作*/
-            Key1Press();
-            keyState = 1;
-        }
-    }
-    else if (KEY2 == 0 && keyState == 0)
-    {
-        keyCount++;
-        if (keyCount > 2 && KEY2 == 0 && keyState == 0)
-        {
-            /*ToDo:按键按下执行的操作*/
-            Key2Press();
-            keyState = 1;
-        }
-    }
-    else if (KEY3 == 0 && keyState == 0)
-    {
-        keyCount++;
-        if (keyCount > 2 && KEY3 == 0 && keyState == 0)
-        {
-            /*ToDo:按键按下执行的操作*/
-            Key3Press();
-            keyState = 1;
-        }
-    }
-    else if (KEY4 == 0 && keyState == 0)
-    {
-        keyCount++;
-        if (keyCount > 2 && KEY4 == 0 && keyState == 0)
-        {
-            /*ToDo:按键按下执行的操作*/
-            Key4Press();
-            keyState = 1;
-        }
-    }
+        delay_ms(10); 
+        key_up = 0;  
 
-    
-    else if (KEY1 == 1 && KEY2 == 1 && KEY3 == 1 && KEY4 == 1 &&keyState == 1) //当所有按键都处于抬起状态，状态刷新  && KEY5 == 1 && KEY6 == 1 && KEY7 == 1 && KEY8 == 1&&keyState == 
+        if (KEY1 == 0) Key1Press();
+        else if (KEY2 == 0) Key2Press();
+        else if (KEY3 == 0) Key3Press();
+        else if (KEY4 == 0) Key4Press();
+    } 
+
+    else if (KEY1 == 1 && KEY2 == 1 && KEY3 == 1 && KEY4 == 1) 
     {
-        keyCount = 0;
-        keyState = 0;
+        key_up = 1; 
     }
 }

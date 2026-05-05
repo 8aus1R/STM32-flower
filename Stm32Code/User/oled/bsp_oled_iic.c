@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include "oledFont.h"
 #include "bsp_oled_iic.h"
 
@@ -14,8 +14,8 @@
 #define X_WIDTH 	128
 #define Y_WIDTH 	64	 
  		     
-#define OLED_CMD  0	//写命令
-#define OLED_DATA 1	//写数据
+#define OLED_CMD  0	//鍐欏懡浠?
+#define OLED_DATA 1	//鍐欐暟鎹?
 
 // SCL
 #define OLED_SCLK_Clr() GPIO_ResetBits(SCL_GPIO_PORT, SCL_GPIO_PIN)
@@ -55,26 +55,26 @@ void Delay_1ms(unsigned int Del_1ms)
 	}
 }			   
 
-static void IIC_Start()
+void IIC_Start()
 {
 	OLED_SCLK_Set() ;
 	OLED_SDIN_Set();
 	OLED_SDIN_Clr();
 	OLED_SCLK_Clr();
 }
-static void IIC_Stop()
+void IIC_Stop()
 {
 	OLED_SCLK_Set() ;
 //	OLED_SCLK_Clr();
 	OLED_SDIN_Clr();
 	OLED_SDIN_Set();
 }
-static void IIC_Wait_Ack()
+void IIC_Wait_Ack()
 {
 	OLED_SCLK_Set() ;
 	OLED_SCLK_Clr();
 }
-static void Write_IIC_Byte(unsigned char IIC_Byte)
+void Write_IIC_Byte(unsigned char IIC_Byte)
 {
 	unsigned char i;
 	unsigned char m,da;
@@ -93,7 +93,7 @@ static void Write_IIC_Byte(unsigned char IIC_Byte)
 		OLED_SCLK_Clr();
 		}
 }
-static void Write_IIC_Command(unsigned char IIC_Command)
+void Write_IIC_Command(unsigned char IIC_Command)
 {
 	IIC_Start();
 	Write_IIC_Byte(0x78);            //Slave address,SA0=0
@@ -104,7 +104,7 @@ static void Write_IIC_Command(unsigned char IIC_Command)
 	IIC_Wait_Ack();	
 	IIC_Stop();
 }
-static void Write_IIC_Data(unsigned char IIC_Data)
+void Write_IIC_Data(unsigned char IIC_Data)
 {
 	IIC_Start();
 	Write_IIC_Byte(0x78);			//D/C#=0; R/W#=0
@@ -143,7 +143,7 @@ void fill_picture(unsigned char fill_Data)
 	}
 }
 
-//坐标设置
+//鍧愭爣璁剧疆
 void OLED_Set_Pos(unsigned char x, unsigned char y) 
 { 	
 	OLED_WR_Byte(0xb0+y,OLED_CMD);
@@ -151,33 +151,33 @@ void OLED_Set_Pos(unsigned char x, unsigned char y)
 	OLED_WR_Byte((x&0x0f),OLED_CMD); 
 }   
 	  
-//开启OLED显示    
+//寮€鍚疧LED鏄剧ず    
 void oled_Display_On(void)
 {
-	OLED_WR_Byte(0X8D,OLED_CMD);  //SET DCDC命令
+	OLED_WR_Byte(0X8D,OLED_CMD);  //SET DCDC鍛戒护
 	OLED_WR_Byte(0X14,OLED_CMD);  //DCDC ON
 	OLED_WR_Byte(0XAF,OLED_CMD);  //DISPLAY ON
 }
 
-//关闭OLED显示     
+//鍏抽棴OLED鏄剧ず     
 void oled_Display_Off(void)
 {
-	OLED_WR_Byte(0X8D,OLED_CMD);  //SET DCDC命令
+	OLED_WR_Byte(0X8D,OLED_CMD);  //SET DCDC鍛戒护
 	OLED_WR_Byte(0X10,OLED_CMD);  //DCDC OFF
 	OLED_WR_Byte(0XAE,OLED_CMD);  //DISPLAY OFF
 }	
 	   			 
-//清屏函数,清完屏,整个屏幕是黑色的!和没点亮一样!!!	  
+//娓呭睆鍑芥暟,娓呭畬灞?鏁翠釜灞忓箷鏄粦鑹茬殑!鍜屾病鐐逛寒涓€鏍?!!	  
 void oled_Clear(void)  
 {  
 	u8 i,n;		    
 	for(i=0;i<8;i++)  
 	{  
-		OLED_WR_Byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
-		OLED_WR_Byte (0x00,OLED_CMD);      //设置显示位置—列低地址
-		OLED_WR_Byte (0x10,OLED_CMD);      //设置显示位置—列高地址   
+		OLED_WR_Byte (0xb0+i,OLED_CMD);    //璁剧疆椤靛湴鍧€锛?~7锛?
+		OLED_WR_Byte (0x00,OLED_CMD);      //璁剧疆鏄剧ず浣嶇疆鈥斿垪浣庡湴鍧€
+		OLED_WR_Byte (0x10,OLED_CMD);      //璁剧疆鏄剧ず浣嶇疆鈥斿垪楂樺湴鍧€   
 		for(n=0;n<128;n++)OLED_WR_Byte(0,OLED_DATA); 
-	} //更新显示
+	} //鏇存柊鏄剧ず
 }
 
 void oled_On(void)  
@@ -185,22 +185,22 @@ void oled_On(void)
 	u8 i,n;		    
 	for(i=0;i<8;i++)  
 	{  
-		OLED_WR_Byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
-		OLED_WR_Byte (0x00,OLED_CMD);      //设置显示位置—列低地址
-		OLED_WR_Byte (0x10,OLED_CMD);      //设置显示位置—列高地址   
+		OLED_WR_Byte (0xb0+i,OLED_CMD);    //璁剧疆椤靛湴鍧€锛?~7锛?
+		OLED_WR_Byte (0x00,OLED_CMD);      //璁剧疆鏄剧ず浣嶇疆鈥斿垪浣庡湴鍧€
+		OLED_WR_Byte (0x10,OLED_CMD);      //璁剧疆鏄剧ず浣嶇疆鈥斿垪楂樺湴鍧€   
 		for(n=0;n<128;n++)OLED_WR_Byte(1,OLED_DATA); 
-	} //更新显示
+	} //鏇存柊鏄剧ず
 }
 
-//在指定位置显示一个字符,包括部分字符
+//鍦ㄦ寚瀹氫綅缃樉绀轰竴涓瓧绗?鍖呮嫭閮ㄥ垎瀛楃
 //x:0~127
 //y:0~63
-//mode:0,反白显示;1,正常显示				 
-//size:选择字体 16/12 
+//mode:0,鍙嶇櫧鏄剧ず;1,姝ｅ父鏄剧ず				 
+//size:閫夋嫨瀛椾綋 16/12 
 void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 Char_Size)
 {      	
 	unsigned char c=0,i=0;	
-		c=chr-' ';//得到偏移后的值			
+		c=chr-' ';//寰楀埌鍋忕Щ鍚庣殑鍊?		
 		if(x>Max_Column-1){x=0;y=y+2;}
 		if(Char_Size ==16)
 			{
@@ -218,7 +218,7 @@ void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 Char_Size)
 				
 			}
 }
-//m^n函数
+//m^n鍑芥暟
 u32 oled_pow(u8 m,u8 n)
 {
 	u32 result=1;	 
@@ -226,12 +226,12 @@ u32 oled_pow(u8 m,u8 n)
 	return result;
 }		
 		  
-//显示多位数字
-//x,y :起点坐标	 
-//len :数字的位数
-//size:字体大小
-//mode:模式	0,填充模式;1,叠加模式
-//num:数值(0~4294967295);	 		  
+//鏄剧ず澶氫綅鏁板瓧
+//x,y :璧风偣鍧愭爣	 
+//len :鏁板瓧鐨勪綅鏁?
+//size:瀛椾綋澶у皬
+//mode:妯″紡	0,濉厖妯″紡;1,鍙犲姞妯″紡
+//num:鏁板€?0~4294967295);	 		  
 void oled_ShowNum(u8 x,u8 y,u32 num,u8 len,u8 size2)
 {         	
 	u8 t,temp;
@@ -251,7 +251,7 @@ void oled_ShowNum(u8 x,u8 y,u32 num,u8 len,u8 size2)
 	}
 } 
 
-//显示一个字符号串
+//鏄剧ず涓€涓瓧绗﹀彿涓?
 void oled_ShowString(u8 x,u8 y,u8 *chr,u8 Char_Size)
 {
 	unsigned char j=0;
@@ -263,7 +263,7 @@ void oled_ShowString(u8 x,u8 y,u8 *chr,u8 Char_Size)
 		j++;
 	}
 }
-//显示汉字
+//鏄剧ず姹夊瓧
 void oled_ShowCHinese(u8 x,u8 y,u8 no)
 {      			    
 	u8 t,adder=0;
@@ -282,12 +282,12 @@ void oled_ShowCHinese(u8 x,u8 y,u8 no)
 }
 void OLED_ShowFNum(u8 x,u8 y,float Fnum,u8 size1)
 {
-	uint8_t Data[]= " ";                             //创建目标数组，用来存放转换后的字符数据 
-    sprintf((char*)Data,"%.3f",Fnum);                       //保留小数点后3位小数，打印到Data数组中
-	oled_ShowString(x,y,Data,size1);            //调用OLED字符串显示函数，在OLED屏上显示
+	uint8_t Data[16] = {0};                         //为浮点转字符串预留足够空间
+    sprintf((char*)Data,"%.3f",Fnum);                       //淇濈暀灏忔暟鐐瑰悗3浣嶅皬鏁帮紝鎵撳嵃鍒癉ata鏁扮粍涓?
+	oled_ShowString(x,y,Data,size1);            //璋冪敤OLED瀛楃涓叉樉绀哄嚱鏁帮紝鍦∣LED灞忎笂鏄剧ず
 }
 
-/***********功能描述：显示显示BMP图片128×64起始点坐标(x,y),x的范围0～127，y为页的范围0～7*****************/
+/***********鍔熻兘鎻忚堪锛氭樉绀烘樉绀築MP鍥剧墖128脳64璧峰鐐瑰潗鏍?x,y),x鐨勮寖鍥?锝?27锛寉涓洪〉鐨勮寖鍥?锝?*****************/
 void oled_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned char y1,unsigned char BMP[])
 { 	
 	unsigned int j=0;
@@ -305,15 +305,15 @@ void oled_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned 
 	}
 } 
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  //
-//初始化SSD1306					    
+//鍒濆鍖朣SD1306					    
 void oled_Init(void)
 { 		 
  	GPIO_InitTypeDef  GPIO_InitStructure;
  	
-	RCC_APB2PeriphClockCmd(SCL_GPIO_CLK| SDA_GPIO_CLK, ENABLE);	 //使能A端口时钟
+	RCC_APB2PeriphClockCmd(SCL_GPIO_CLK| SDA_GPIO_CLK, ENABLE);	 //浣胯兘A绔彛鏃堕挓
  
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//速度50MHz
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //鎺ㄦ尳杈撳嚭
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//閫熷害50MHz
 	// SCL
 	GPIO_InitStructure.GPIO_Pin = SCL_GPIO_PIN;
  	GPIO_Init(SCL_GPIO_PORT, &GPIO_InitStructure);	  
@@ -369,33 +369,34 @@ void oled_Init(void)
 
 
 
-//反显函数
+//鍙嶆樉鍑芥暟
 void oled_ColorTurn(uint8_t i)
 {
 	if(i==0)
 		{
-			OLED_WR_Byte(0xA6,OLED_CMD);//正常显示
+			OLED_WR_Byte(0xA6,OLED_CMD);//姝ｅ父鏄剧ず
 		}
 	if(i==1)
 		{
-			OLED_WR_Byte(0xA7,OLED_CMD);//反色显示
+			OLED_WR_Byte(0xA7,OLED_CMD);//鍙嶈壊鏄剧ず
 		}
 }
 
-//屏幕旋转180度
+//灞忓箷鏃嬭浆180搴?
 void oled_DisplayTurn(uint8_t i)
 {
 	if(i==0)
 		{
-			OLED_WR_Byte(0xC8,OLED_CMD);//正常显示
+			OLED_WR_Byte(0xC8,OLED_CMD);//姝ｅ父鏄剧ず
 			OLED_WR_Byte(0xA1,OLED_CMD);
 		}
 	if(i==1)
 		{
-			OLED_WR_Byte(0xC0,OLED_CMD);//反转显示
+			OLED_WR_Byte(0xC0,OLED_CMD);//鍙嶈浆鏄剧ず
 			OLED_WR_Byte(0xA0,OLED_CMD);
 		}
 }
+
 
 
 

@@ -44,7 +44,8 @@ void My_USART2(void)
 }
 
 
-__align(8) char USART2_TxBuff[256];  
+
+__attribute__((aligned(8))) char USART2_TxBuff[256];
 
 void u2_printf(char* fmt,...) 
 {  

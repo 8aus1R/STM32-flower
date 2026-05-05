@@ -1,62 +1,37 @@
-.\objects\bsp_beep.o: ..\User\beep\bsp_beep.c
-.\objects\bsp_beep.o: ..\User\beep\bsp_beep.h
-.\objects\bsp_beep.o: ..\SYS\sys.h
-.\objects\bsp_beep.o: ..\Libraries\CMSIS\stm32f10x.h
-.\objects\bsp_beep.o: ..\Libraries\CMSIS\core_cm3.h
-.\objects\bsp_beep.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\bsp_beep.o: ..\Libraries\CMSIS\system_stm32f10x.h
-.\objects\bsp_beep.o: ..\User\stm32f10x_conf.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h
-.\objects\bsp_beep.o: ..\Libraries\CMSIS\stm32f10x.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_cec.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_fsmc.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_i2c.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_iwdg.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rtc.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_sdio.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
-.\objects\bsp_beep.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
-.\objects\bsp_beep.o: ..\SYS\bsp_config.h
-.\objects\bsp_beep.o: ..\SYS\sys.h
-.\objects\bsp_beep.o: ..\User\./delay/delay.h
-.\objects\bsp_beep.o: ..\SYS\./my_usart/my_usart1.h
-.\objects\bsp_beep.o: ..\SYS\./my_usart/my_usart2.h
-.\objects\bsp_beep.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\bsp_beep.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\bsp_beep.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\bsp_beep.o: ..\User\./wifi/wifi.h
-.\objects\bsp_beep.o: ..\SYS\./time/time4.h
-.\objects\bsp_beep.o: ..\SYS\./time/time3.h
-.\objects\bsp_beep.o: ..\SYS\./time/time2.h
-.\objects\bsp_beep.o: ..\SYS\./time/time1.h
-.\objects\bsp_beep.o: ..\User\./led/led.h
-.\objects\bsp_beep.o: ..\SYS\main.h
-.\objects\bsp_beep.o: ..\User\./key/key.h
-.\objects\bsp_beep.o: ..\User\./mqtt/mqtt.h
-.\objects\bsp_beep.o: ..\User\./mqtt/utils_hmac.h
-.\objects\bsp_beep.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\bsp_beep.o: ..\User\./mqtt/utils_md5.h
-.\objects\bsp_beep.o: ..\User\./mqtt/utils_sha1.h
-.\objects\bsp_beep.o: ..\User\./SGP30/sgp30.h
-.\objects\bsp_beep.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-.\objects\bsp_beep.o: ..\User\./oled/bsp_oled_iic.h
-.\objects\bsp_beep.o: ..\User\./oled/oledFont.h
-.\objects\bsp_beep.o: ..\User\./beep/bsp_beep.h
-.\objects\bsp_beep.o: ..\User\./dht11/DHT11.h
-.\objects\bsp_beep.o: ..\User\./relay/relay.h
-.\objects\bsp_beep.o: ..\User\./adc/adc.h
-.\objects\bsp_beep.o: ..\SYS\./menu/menu.h
+./objects/bsp_beep.o: ..\User\beep\bsp_beep.c ..\User\beep\bsp_beep.h \
+  ..\SYS\sys.h ..\Libraries\CMSIS\stm32f10x.h \
+  ..\Libraries\CMSIS\core_cm3.h ..\Libraries\CMSIS\system_stm32f10x.h \
+  ..\User\stm32f10x_conf.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_cec.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_fsmc.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_i2c.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_iwdg.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rtc.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_sdio.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h \
+  ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h ..\SYS\bsp_config.h \
+  ..\User\.\delay\delay.h ..\SYS\.\my_usart\my_usart1.h \
+  ..\SYS\.\my_usart\my_usart2.h ..\User\.\wifi\wifi.h \
+  ..\SYS\.\time\time4.h ..\SYS\.\time\time3.h ..\SYS\.\time\time2.h \
+  ..\SYS\.\time\time1.h ..\User\.\led\led.h ..\SYS\main.h \
+  ..\User\.\key\key.h ..\User\.\mqtt\mqtt.h ..\User\.\mqtt\utils_hmac.h \
+  ..\User\.\mqtt\utils_md5.h ..\User\.\mqtt\utils_sha1.h \
+  ..\User\.\SGP30\sgp30.h ..\User\.\oled\bsp_oled_iic.h \
+  ..\User\.\oled\oledFont.h ..\User\.\beep\bsp_beep.h \
+  ..\User\.\dht11\DHT11.h ..\User\.\relay\relay.h ..\User\.\adc\adc.h \
+  ..\SYS\.\menu\menu.h

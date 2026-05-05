@@ -55,7 +55,8 @@ void USART_SendByte(USART_TypeDef* USARTx, uint16_t Data)
 }
 
 
-__align(8) char USART1_TxBuff[256];  
+__attribute__((aligned(8))) char USART1_TxBuff[256];
+ 
 
 void u1_printf(char* fmt,...) 
 {  

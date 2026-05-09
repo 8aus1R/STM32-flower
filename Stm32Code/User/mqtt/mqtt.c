@@ -1,4 +1,4 @@
-﻿#include "sys.h"
+#include "sys.h"
 u8 TEMIP_MAX;
 u8 TEMIP_MIN;
 u8 mqtt_buff[400];
@@ -39,6 +39,10 @@ int  ServerPort;
 
 void Mqtt_Subscribe(char *topic_name, int QoS);
 void mqtt_DealTxData(unsigned char *data, int size);
+static void MQTT_ResetState(void);
+static unsigned char mqtt_TryReadValue(char *cmd, const char *key, int *value);
+static void mqtt_ApplySwitch(char *cmd, const char *key, uint8_t *sw);
+static void mqtt_ApplyRemoteCommand(char *cmd);
 
 void MQTT_Buff_Init(void)
 {
@@ -262,20 +266,183 @@ char *mid(char *dst, char *src, int n, int m) /*n为长度，m为位置*/
     return dst;
 }
 
+static void MQTT_ResetState(void)
+{
+    Connect_flag = 0;
+    ConnectPack_flag = 0;
+    SubscribePack_flag = 0;
+    Ping_flag = 0;
+    PingCount = 0;
+    memset(mqtt_TxBuf, 0, sizeof(mqtt_TxBuf));
+    memset(mqtt_RxBuf, 0, sizeof(mqtt_RxBuf));
+    memset(mqtt_CMDBuf, 0, sizeof(mqtt_CMDBuf));
+    MQTT_Buff_Init();
+}
 
+static unsigned char mqtt_TryReadValue(char *cmd, const char *key, int *value)
+{
+    char *p;
+    int result;
 
+    p = strstr(cmd, key);
+    if (p == 0) {
+        return 0;
+    }
+
+    p += strlen(key);
+    while (*p && *p != '=' && *p != ':' && *p != ',' && *p != '}') {
+        p++;
+    }
+
+    if (*p != '=' && *p != ':') {
+        return 0;
+    }
+
+    p++;
+    while (*p == ' ' || *p == '\"') {
+        p++;
+    }
+
+    if (*p < '0' || *p > '9') {
+        return 0;
+    }
+
+    result = 0;
+    while (*p >= '0' && *p <= '9') {
+        result = result * 10 + (*p - '0');
+        p++;
+    }
+
+    *value = result;
+    return 1;
+}
+
+static void mqtt_ApplySwitch(char *cmd, const char *key, uint8_t *sw)
+{
+    char *p;
+    int value;
+
+    if (mqtt_TryReadValue(cmd, key, &value)) {
+        *sw = value ? 1 : 0;
+        return;
+    }
+
+    p = strstr(cmd, key);
+    if (p == 0) {
+        return;
+    }
+
+    if (strstr(p, "On") || strstr(p, "ON") || strstr(p, "open")) {
+        *sw = 1;
+    } else if (strstr(p, "Off") || strstr(p, "OFF") || strstr(p, "close")) {
+        *sw = 0;
+    } else {
+        *sw = !(*sw);
+    }
+}
+
+static void mqtt_ApplyRemoteCommand(char *cmd)
+{
+    int value;
+
+    if (strstr(cmd, "Manual") || strstr(cmd, "Remote")) {
+        oled_Clear();
+        OperateMode = 1;
+    }
+
+    if (strstr(cmd, "Automatic") || strstr(cmd, "Auto")) {
+        oled_Clear();
+        OperateMode = 0;
+    }
+
+    if (strstr(cmd, "ThresholdOn") || strstr(cmd, "ThresholdMode")) {
+        oled_Clear();
+        OperateMode = 2;
+    }
+
+    if (mqtt_TryReadValue(cmd, "mode", &value) && value >= 0 && value <= 2) {
+        oled_Clear();
+        OperateMode = value;
+    }
+
+    mqtt_ApplySwitch(cmd, "Switch1", &System.Switch1);
+    mqtt_ApplySwitch(cmd, "Fan", &System.Switch1);
+    mqtt_ApplySwitch(cmd, "Switch2", &System.Switch2);
+    mqtt_ApplySwitch(cmd, "Pump", &System.Switch2);
+    mqtt_ApplySwitch(cmd, "Switch3", &System.Switch3);
+    mqtt_ApplySwitch(cmd, "Switch4", &System.Switch4);
+    mqtt_ApplySwitch(cmd, "Switch5", &System.Switch5);
+
+    if (strstr(cmd, "Threshold1Down") && Threshold.TempMax > 0) {
+        Threshold.TempMax--;
+    }
+
+    if (strstr(cmd, "Threshold1Add") && Threshold.TempMax < 99) {
+        Threshold.TempMax++;
+    }
+
+    if (strstr(cmd, "Threshold2Down") && Threshold.HumiMin > 0) {
+        Threshold.HumiMin--;
+    }
+
+    if (strstr(cmd, "Threshold2Add") && Threshold.HumiMin < 100) {
+        Threshold.HumiMin++;
+    }
+
+    if (strstr(cmd, "Threshold3Down") && Threshold.SoliMin > 0) {
+        Threshold.SoliMin--;
+    }
+
+    if (strstr(cmd, "Threshold3Add") && Threshold.SoliMin < 100) {
+        Threshold.SoliMin++;
+    }
+
+    if (strstr(cmd, "Threshold4Down") && Threshold.LightMin > 0) {
+        Threshold.LightMin--;
+    }
+
+    if (strstr(cmd, "Threshold4Add") && Threshold.LightMin < 100) {
+        Threshold.LightMin++;
+    }
+
+    if ((mqtt_TryReadValue(cmd, "TempMax", &value) || mqtt_TryReadValue(cmd, "Threshold1", &value)) && value >= 0 && value <= 99) {
+        Threshold.TempMax = value;
+    }
+
+    if ((mqtt_TryReadValue(cmd, "HumiMin", &value) || mqtt_TryReadValue(cmd, "Threshold2", &value)) && value >= 0 && value <= 100) {
+        Threshold.HumiMin = value;
+    }
+
+    if ((mqtt_TryReadValue(cmd, "SoliMin", &value) || mqtt_TryReadValue(cmd, "SoilMin", &value) || mqtt_TryReadValue(cmd, "Threshold3", &value)) && value >= 0 && value <= 100) {
+        Threshold.SoliMin = value;
+    }
+
+    if ((mqtt_TryReadValue(cmd, "LightMin", &value) || mqtt_TryReadValue(cmd, "Threshold4", &value)) && value >= 0 && value <= 100) {
+        Threshold.LightMin = value;
+    }
+
+    if ((mqtt_TryReadValue(cmd, "SGP30Max", &value) || mqtt_TryReadValue(cmd, "Threshold5", &value)) && value >= 0 && value <= 1000) {
+        Threshold.SGP30Max = value;
+    }
+
+    System.ClearFlag = 1;
+    System.mqttflag = 1;
+}
 
 
 void mqtt_Content(void)
 {
     if (Connect_flag == 0) {
+        ConnectPack_flag = 0;
+        SubscribePack_flag = 0;
+        Ping_flag = 0;
+        PingCount = 0;
         memset(WiFi_RX_BUF, 0, 1024);
         WiFi_RxCounter = 0;
         TIM_Cmd(TIM4, DISABLE);
         TIM_Cmd(TIM3, DISABLE);
         u1_printf("正在连接MQTT服务器\r\n");
 			
-			  oled_ShowString(16, 4, (u8 *)"connecting...", 16);
 			
 
         if (WIFI_Connect() == 0) {
@@ -310,32 +477,32 @@ void mqtt_Content(void)
 
                 case 0x01 :
                     u1_printf("0x01连接已拒绝，不支持的协议版本，准备重启\r\n");
-                    Connect_flag = 0;
+                    MQTT_ResetState();
                     break;
 
                 case 0x02 :
                     u1_printf("0x02连接已拒绝，不合格的客户 端标识符，准备重启\r\n");
-                    Connect_flag = 0;
+                    MQTT_ResetState();
                     break;
 
                 case 0x03 :
                     u1_printf("0x03连接已拒绝，服务端不可用，准备重启\r\n");
-                    Connect_flag = 0;
+                    MQTT_ResetState();
                     break;
 
                 case 0x04 :
                     u1_printf("0x04连接已拒绝，无效的用户名 或密码，准备重启\r\n");
-                    Connect_flag = 0;
+                    MQTT_ResetState();
                     break;
 
                 case 0x05 :
                     u1_printf("0x05连接已拒绝，未授权，准备重启\r\n");
-                    Connect_flag = 0;
+                    MQTT_ResetState();
                     break;
 
                 default   :
                     u1_printf("连接已拒绝，准备重启\r\n");
-                    Connect_flag = 0;
+                    MQTT_ResetState();
                     break;
                 }
             } else if (mqtt_RxOutPtr[2] == 0x90) {
@@ -350,7 +517,7 @@ void mqtt_Content(void)
 
                 default   :
                     u1_printf("订阅失败，准备重启\r\n");
-                    Connect_flag = 0;
+                    MQTT_ResetState();
                     break;
                 }
             } else if (mqtt_RxOutPtr[2] == 0xD0) {
@@ -370,108 +537,7 @@ void mqtt_Content(void)
 
         if (mqtt_CMDOutPtr != mqtt_CMDInPtr) {
             u1_printf("命令:%s\r\n", &mqtt_CMDOutPtr[2]);
-
-            
-					//模式切换
-					if (strstr((char *)mqtt_CMDOutPtr + 2, "Manual")) {
-                oled_Clear();
-                OperateMode = 1;
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Automatic")) {
-                oled_Clear();
-                OperateMode = 0;
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "ThresholdOn")) {
-                oled_Clear();
-                OperateMode = 2;
-            }
-						
-							//手动模式
-						
-						 if (strstr((char *)mqtt_CMDOutPtr + 2, "Switch1")) {
-                System.Switch1 = !System.Switch1;
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Switch2")) {
-                System.Switch2 = !System.Switch2;
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Switch3")) {
-                System.Switch3 = !System.Switch3;
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Switch4")) {
-                System.Switch4 = !System.Switch4;
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Switch5")) {
-                System.Switch5 = !System.Switch5;
-            }
-						
-						//阈值加减
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold1Down")) {
-                if (Threshold.TempMax > 0) {
-                    Threshold.TempMax--;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold1Add")) {
-                if (Threshold.TempMax < 99) {
-                    Threshold.TempMax++;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold2Down")) {
-                if (Threshold.HumiMin > 0) {
-                    Threshold.HumiMin--;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold2Add")) {
-                if (Threshold.HumiMin < 100) {
-                    Threshold.HumiMin++;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold3Down")) {
-                if (Threshold.SoliMin > 0) {
-                    Threshold.SoliMin--;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold3Add")) {
-                if (Threshold.SoliMin < 100) {
-                    Threshold.SoliMin++;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold4Down")) {
-                if (Threshold.LightMin > 0) {
-                    Threshold.LightMin--;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold4Add")) {
-                if (Threshold.LightMin < 100) {
-                    Threshold.LightMin++;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold5Down")) {
-                if (Threshold.SGP30Max > 0) {
-                    Threshold.SGP30Max--;
-                }
-            }
-
-            if (strstr((char *)mqtt_CMDOutPtr + 2, "Threshold5Add")) {
-                if (Threshold.SGP30Max < 1000) {
-                    Threshold.SGP30Max++;
-                }
-            }
-
-           
+            mqtt_ApplyRemoteCommand((char *)mqtt_CMDOutPtr + 2);
 
             memset(mqtt_CMDOutPtr + 2, 0x00, 398);
             mqtt_CMDOutPtr += 400;
@@ -482,6 +548,3 @@ void mqtt_Content(void)
         }
     };
 }
-
-
-

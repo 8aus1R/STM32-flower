@@ -8,9 +8,11 @@ SYSTEM System;//??????????
 void mqttPublic(void);
 void Threshold_Init(THRESHOLD *Threshold);
 static u8 Read_Soil_Moisture_Stable(void);
+static u8 Network_Ready(void);
+static void Network_Task(void);
 
 // ??? ADC ????????
-u8 get_soil_moisture(u16 adc_val) 
+u8 get_soil_moisture(u16 adc_val)
 {
     // ???:?????????ADC?4000,?????1200 (?????????????)
     int val = (4000 - adc_val) * 100 / (4000 - 1200);
@@ -74,10 +76,10 @@ int main(void)
     LED_GPIO_Config();//LED????
     DHT11_Init();//?????????
     KEY_Init();//?????
-    
+
     // ???????????????????????
     Threshold_Init(&Threshold);//?????????????????
-    
+
     oled_Clear();
     isKey1=isKey2=isKey3=isKey4=0;
 
@@ -85,25 +87,53 @@ int main(void)
     while (1) {
         KeyScan(); // ????????????
 
-        // ?????????????????,????????????????
-        // mqtt_Content(); 
-
         DHT11_Read_TempAndHumidity(&dht11Data); //?????;
-        
+
         // ??????????????
         SensorData.SoliVal = Read_Soil_Moisture_Stable();
         // ??????????
-        SensorData.LightVal = Get_Adc_Average(5, 5) / 41; 
+        SensorData.LightVal = Get_Adc_Average(5, 5) / 41;
 
         Mode_Decide();//???? (?????????)
 
-        // ???????
-        // if (System.mqttflag) {
-        //     mqttPublic();//?MQTT???????
-        //     System.mqttflag = 0;
-        // }
-        
+        // Keep local buttons/display responsive. Network work runs after local UI
+        // and reconnects with a delay when WiFi/MQTT is unavailable.
+        Network_Task();
+
+        // Publish data only after MQTT connect and subscribe packets finish.
+        if (System.mqttflag && Network_Ready()) {
+            mqttPublic();//?MQTT???????
+            System.mqttflag = 0;
+        }
+
         delay_ms(50); // ??????????????,??????????
+    }
+}
+
+static u8 Network_Ready(void)
+{
+    return (Connect_flag && ConnectPack_flag && SubscribePack_flag);
+}
+
+static void Network_Task(void)
+{
+    static u16 retry_delay = 200;
+
+    if (Connect_flag) {
+        mqtt_Content();
+        retry_delay = 200;
+        return;
+    }
+
+    if (retry_delay > 0) {
+        retry_delay--;
+        return;
+    }
+
+    mqtt_Content();
+
+    if (!Connect_flag) {
+        retry_delay = 600;
     }
 }
 
@@ -114,9 +144,10 @@ void mqttPublic(void)
     /*****???????JSON???????*****/
     // ????:?? SensorData ????????,???????? 100- ??
     sprintf(Data,
-            "{\"sensor1\":%d,\"sensor2\":%d,\"sensor3\":%d,\"sensor4\":%d,\"sensor5\":%d,\"sensor6\":%d}",
+            "{\"sensor1\":%d,\"sensor2\":%d,\"sensor3\":%d,\"sensor4\":%d,\"sensor5\":%d,\"sensor6\":%d,\"mode\":%d,\"pump\":%d,\"fan\":%d,\"light\":%d}",
             dht11Data.temp_int, SensorData.SoliVal, SensorData.LightVal
             , Threshold.TempMax,  Threshold.SoliMin, Threshold.LightMin
+            , OperateMode, System.Switch2, System.Switch1, System.Switch3
            );
     mqtt_PublishQs0(P_TOPIC_NAME, Data, strlen(Data)); //????,???:Topic,JSON????,????
 }

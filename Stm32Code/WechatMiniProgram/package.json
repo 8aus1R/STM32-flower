@@ -1,0 +1,9 @@
+{
+  "name": "stm32-flower-miniprogram",
+  "version": "1.0.0",
+  "description": "Native WeChat Mini Program for STM32 flower system MQTT debugging.",
+  "private": true,
+  "dependencies": {
+    "mqtt": "^5.10.4"
+  }
+}

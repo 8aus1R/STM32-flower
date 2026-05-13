@@ -1,0 +1,42 @@
+<view class="page">
+  <view class="panel">
+    <view class="panel-title">Connection Status</view>
+    <view class="status-line">
+      <text class="status-dot {{statusClass}}"></text>
+      <text>{{statusText}}</text>
+    </view>
+    <view class="device-line muted">Device: {{deviceStatus}}</view>
+    <view class="button-row top-actions">
+      <button class="primary-btn" bindtap="handleConnect">Connect MQTT</button>
+      <button class="secondary-btn" bindtap="handleDisconnect">Disconnect</button>
+    </view>
+  </view>
+
+  <view class="metrics-grid">
+    <view class="metric-card">
+      <view class="metric-label">Soil</view>
+      <view class="metric-value">{{latestData.soil}}</view>
+    </view>
+    <view class="metric-card">
+      <view class="metric-label">Light</view>
+      <view class="metric-value">{{latestData.light}}</view>
+    </view>
+    <view class="metric-card">
+      <view class="metric-label">Temperature</view>
+      <view class="metric-value">{{latestData.temperature}}</view>
+    </view>
+    <view class="metric-card">
+      <view class="metric-label">Humidity</view>
+      <view class="metric-value">{{latestData.humidity}}</view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-title">Recent Logs</view>
+    <view class="log-list">
+      <block wx:for="{{logs}}" wx:key="*this">
+        <view class="log-item">{{item}}</view>
+      </block>
+    </view>
+  </view>
+</view>

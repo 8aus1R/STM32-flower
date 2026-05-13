@@ -1,0 +1,89 @@
+page {
+  background: #f4f7f5;
+  color: #17211b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 28rpx;
+  box-sizing: border-box;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1rpx solid #dde6df;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.panel-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  margin-bottom: 18rpx;
+}
+
+.muted {
+  color: #667085;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10rpx;
+  background: #98a2b3;
+}
+
+.status-dot.online {
+  background: #12b76a;
+}
+
+.status-dot.error {
+  background: #f04438;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18rpx;
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 10rpx;
+  font-size: 30rpx;
+}
+
+.primary-btn {
+  background: #1f6f4a;
+  color: #ffffff;
+}
+
+.secondary-btn {
+  background: #e7f4ec;
+  color: #175c3d;
+}
+
+.danger-btn {
+  background: #fff1f0;
+  color: #b42318;
+}
+
+.log-list {
+  max-height: 420rpx;
+  overflow: hidden;
+}
+
+.log-item {
+  font-size: 24rpx;
+  line-height: 34rpx;
+  color: #344054;
+  padding: 8rpx 0;
+  border-bottom: 1rpx solid #edf2ee;
+}

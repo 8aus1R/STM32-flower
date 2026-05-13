@@ -1,0 +1,6 @@
+.status-line {
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  margin-bottom: 14rpx;
+}
